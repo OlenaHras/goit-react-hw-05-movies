@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
+
 import { getPopularMovie } from 'Sourses/API';
+import { MoviesList } from '../../components/MoviesList/MoviesList';
+// import{MovieDetails} from
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -7,15 +10,11 @@ const Home = () => {
   useEffect(() => {
     getPopularMovie().then(results => setMovies(results));
   }, []);
-  console.log(movies);
+
   return (
     <div>
       <h1>Trending today</h1>
-      <ul>
-        {movies.map(movie => {
-          return <li>{movie.original_title}</li>;
-        })}
-      </ul>
+      <MoviesList list={movies} />
     </div>
   );
 };

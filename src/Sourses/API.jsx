@@ -6,9 +6,9 @@ axios.defaults.baseURL = 'https://api.themoviedb.org/3';
 const END_POINTS = {
   trending: '/trending/movie/week',
   searchMovie: '/search/movie',
-  details: '/movie/{movie_id}',
-  credits: '/movie/{movie_id}/credits',
-  reviews: '/movie/{movie_id}/reviews',
+  details: '/movie',
+  // credits: '/movie',
+  // reviews: '/movie',
 };
 
 export const getPopularMovie = async () => {
@@ -16,24 +16,30 @@ export const getPopularMovie = async () => {
   return response.data.results;
 };
 
-export const searchMovie = async () => {
+export const searchMovie = async query => {
   const response = await axios.get(
-    `${END_POINTS.searchMovie}?api_key=${API_KEY}`
+    `${END_POINTS.searchMovie}?api_key=${API_KEY}&query=${query}`
   );
   return response.data.results;
 };
 
-export const getDetails = async () => {
-  const response = await axios.get(`${END_POINTS.details}?api_key=${API_KEY}`);
-  return response.data.results;
+export const getDetails = async id => {
+  const response = await axios.get(
+    `${END_POINTS.details}/${id}?api_key=${API_KEY}`
+  );
+  return response.data;
 };
 
-export const getCredits = async () => {
-  const response = await axios.get(`${END_POINTS.credits}?api_key=${API_KEY}`);
-  return response.data.results;
+export const getCredits = async id => {
+  const response = await axios.get(
+    `${END_POINTS.details}/${id}/credits?api_key=${API_KEY}`
+  );
+  return response.data;
 };
 
-export const getReviews = async () => {
-  const response = await axios.get(`${END_POINTS.reviews}?api_key=${API_KEY}`);
-  return response.data.results;
+export const getReviews = async id => {
+  const response = await axios.get(
+    `${END_POINTS.details}/${id}/reviews?api_key=${API_KEY}`
+  );
+  return response.data;
 };
