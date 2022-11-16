@@ -7,8 +7,6 @@ const END_POINTS = {
   trending: '/trending/movie/week',
   searchMovie: '/search/movie',
   details: '/movie',
-  // credits: '/movie',
-  // reviews: '/movie',
 };
 
 export const getPopularMovie = async () => {

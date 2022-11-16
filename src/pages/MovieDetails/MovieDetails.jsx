@@ -1,24 +1,27 @@
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useParams, Outlet, Link, useLocation } from 'react-router-dom';
 import { getDetails } from 'Sourses/API';
-import { DetailsWrapper, Main } from './MovieDetails.styled';
-// import { Cast } from "../../pages/Cast";
+import { DetailsWrapper, Main, BackLink, Wrapper } from './MovieDetails.styled';
 
-export const MovieDetails = () => {
+const MovieDetails = () => {
   const [movie, setMovie] = useState(null);
   const { movieId } = useParams();
   const location = useLocation();
-  // console.log(location.state);
-  useEffect(() => {
-    getDetails(movieId).then(result => {
-      setMovie(result);
-    });
-  });
 
+  const result = [];
+  if (movie) {
+    movie.genres.map(genre => result.push(genre.name));
+  }
+
+  useEffect(() => {
+    getDetails(movieId).then(result => setMovie(result));
+  }, [movieId]);
+
+  const BackLinkHref = location.state?.from ?? '//movies';
   return (
     <Main>
-      {/* <button type="button">Go back</button> */}
-      <Link to={location.state.from}>Go back</Link>
+      <BackLink to={BackLinkHref}>Go back</BackLink>
       {movie && (
         <div>
           <DetailsWrapper>
@@ -26,23 +29,30 @@ export const MovieDetails = () => {
               src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`}
               alt={movie.original_title}
             />
-            <div>
+            <Wrapper>
               <h1>{movie.original_title}</h1>
               <p>User Score: {movie.vote_average.toFixed(2)}</p>
               <h2>Overview </h2>
               <p>{movie.overview}</p>
               <h3>Genres</h3>
-            </div>
+              <p>{result.join(', ')}</p>
+            </Wrapper>
           </DetailsWrapper>
           <h3>Additional information</h3>
           <ul>
             <li>
-              <Link to="cast" state={{ from: location }}>
+              <Link
+                to="cast"
+                state={{ from: location.state?.from ?? '/movies' }}
+              >
                 Cast
               </Link>
             </li>
             <li>
-              <Link to="reviews" state={{ from: location }}>
+              <Link
+                to="reviews"
+                state={{ from: location.state?.from ?? '/movies' }}
+              >
                 Reviews{' '}
               </Link>
             </li>
@@ -51,10 +61,16 @@ export const MovieDetails = () => {
           <Outlet />
         </div>
       )}
-      {/* {movie &&
-        movie.genres.map(genre => {
-          return <p>{genre.name}</p>;
-        })} */}
     </Main>
   );
+};
+export default MovieDetails;
+
+MovieDetails.propTypes = {
+  movie: PropTypes.exact({
+    poster_path: PropTypes.string,
+    original_title: PropTypes.string.isRequired,
+    vote_average: PropTypes.string.isRequired,
+    overview: PropTypes.string.isRequired,
+  }),
 };

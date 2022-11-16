@@ -1,17 +1,17 @@
 import { getCredits } from 'Sourses/API';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import defaultImage from '../../Images/default_image.png';
 import { CastList, Image, DefaultImg } from './Cast.styled';
 
-export const Cast = () => {
+const Cast = () => {
   const [cast, setCast] = useState([]);
   const { movieId } = useParams();
 
   useEffect(() => {
     getCredits(movieId).then(result => setCast(result.cast));
   }, [movieId]);
-  console.log(cast);
   return (
     <CastList>
       {cast &&
@@ -33,4 +33,8 @@ export const Cast = () => {
         })}
     </CastList>
   );
+};
+export default Cast;
+Cast.propTypes = {
+  movieId: PropTypes.string,
 };
